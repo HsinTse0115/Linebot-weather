@@ -23,8 +23,12 @@ def send_weather_update():
 
 # 定義排程任務
 schedule.every(1).minutes.do(send_weather_update)  # 每 1 分鐘執行一次
-
+#schedule.every().day.at("08:00").do(send_weather_update) # 每天早上 8 點執行一次
 def run_scheduler():
+    """執行排程任務"""
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
     """執行排程任務"""
     while True:
         schedule.run_pending()
