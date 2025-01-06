@@ -14,6 +14,7 @@
 
 ## 技術架構
 
+```
 *   **程式語言**: Python
 *   **Web 框架**: Flask
 *   **Line Bot API**: 使用 Line Bot SDK 與 Line Bot 互動
@@ -21,6 +22,7 @@
 *   **排程工具**:使用 schedule 套件進行排程任務
 *   **HTTP請求**:使用 requests 套件進行 API 請求
 *   **環境變數管理**:使用 config.py 文件管理環境變數
+```
 
 ## 專案架構
 Linebot-weather/ 
