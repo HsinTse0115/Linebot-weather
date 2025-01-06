@@ -24,14 +24,14 @@
 
 ## 專案架構
 Linebot-weather/ 
-├── requirements.txt/
+├── requirements.txt
 ├── src/
-│ ├── bot.py/
-│ ├── config.py/
-│ ├── database.py/
-│ ├── scheduler.py/
-│ └── weather.py/      
-└── README.md/ 
+│   ├── bot.py
+│   ├── config.py
+│   ├── database.py
+│   ├── scheduler.py
+│   └── weather.py      
+└── README.md
    
 
 *   `requirements.txt/`:文件用於列出專案所需的 Python 套件
