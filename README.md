@@ -23,7 +23,6 @@
 *   **環境變數管理**:使用 config.py 文件管理環境變數
 
 ## 專案架構
-
 Linebot-weather/ 
 ├── requirements.txt
 ├── src/
@@ -34,7 +33,8 @@ Linebot-weather/
 │   └── weather.py      
 └── README.md
    
-*   `requirements.txt/`:文件用於列出專案所需的 Python 套件
+
+*   `requirements.txt`:文件用於列出專案所需的 Python 套件
     *   `Flask`用於建立 Web 應用程式的輕量級框架。
     *   `line-bot-sdk`用於與 Line Bot API 互動的 SDK。
     *   `requests`用於發送 HTTP 請求的套件。
