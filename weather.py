@@ -73,32 +73,6 @@ def get_clothing_advice(temperature, humidity, wind_speed, weather_description, 
 
     return clothing_advice
 
-# 天氣預報查詢
-def get_weather_forecast(lat, lon, city):
-    url = f"http://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={WEATHER_API_KEY}&units=metric&lang=zh_tw"
-    try:
-        response = requests.get(url)
-        response.raise_for_status()
-        data = response.json()
-
-        if data.get("cod") != "200":
-            return "抱歉，無法取得該地區的天氣預報資訊。請稍後再試。"
-
-        forecast_list = data.get('list', [])
-        forecast_info = f"{city} 的天氣預報：\n"
-        for forecast in forecast_list[:5]:  # 只取前5筆預報資料
-            dt_txt = forecast.get('dt_txt', '無法取得時間')
-            weather_description = forecast.get('weather', [{}])[0].get('description', '無法取得天氣描述')
-            temperature = forecast.get('main', {}).get('temp', '無法取得溫度')
-            humidity = forecast.get('main', {}).get('humidity', '無法取得濕度')
-            wind_speed = forecast.get('wind', {}).get('speed', '無法取得風速')
-            forecast_info += f"{dt_txt} - {weather_description}, 氣溫：{temperature}°C, 濕度：{humidity}%, 風速：{wind_speed} m/s\n"
-
-        return forecast_info
-
-    except requests.exceptions.RequestException as e:
-        return f"抱歉，無法取得天氣預報資訊。錯誤信息：{e}"
-
 # 即時天氣查詢
 def get_weather(city="高雄"):
     url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={WEATHER_API_KEY}&units=metric&lang=zh_tw"
@@ -142,32 +116,14 @@ def handle_message(event):
             reply_message = weather_info
         else:
             reply_message = "請輸入要查詢天氣的城市名稱，例如：天氣高雄"
-    
-    elif user_message.startswith("預報"):
-        city = user_message.replace("預報", "").strip()
-        if city:
-            # 使用城市名稱取得經緯度，然後進行預報查詢
-            geo_url = f"http://api.openweathermap.org/geo/1.0/direct?q={city}&limit=1&appid={WEATHER_API_KEY}"
-            try:
-                geo_response = requests.get(geo_url)
-                geo_response.raise_for_status()
-                geo_data = geo_response.json()
-                
-                if geo_data:
-                    lat = geo_data[0]['lat']
-                    lon = geo_data[0]['lon']
-                    forecast_info = get_weather_forecast(lat, lon, city)
-                    reply_message = forecast_info
-                else:
-                    reply_message = "無法取得該城市的地理資訊，請確認城市名稱是否正確。"
-            
-            except requests.exceptions.RequestException as e:
-                reply_message = f"抱歉，無法取得天氣預報資訊。錯誤信息：{e}"
-        else:
-            reply_message = "請輸入要查詢天氣預報的城市名稱，例如：預報台北"
-    
+       
     else:
-        reply_message = "歡迎使用天氣小幫手！\n- 查詢即時天氣：『天氣[城市名稱]』\n- 查詢預報：『預報[城市名稱]』"
+        reply_message = "抱歉，我目前只能處理天氣查詢。如果需要查詢天氣，請輸入以下指令\n" \
+            "功能:\n" \
+            "查詢天氣：(城市名+天氣)\n" \
+            "修改自動播報的地區：設定城市（空格）城市名\n" \
+            "查詢自己的Line UserID:查詢ID"
+
 
     line_bot_api.reply_message(
         event.reply_token,
@@ -185,35 +141,6 @@ def callback():
         abort(400)
     return 'OK'
 
-
-# 處理用戶訊息
-@handler.add(MessageEvent, message=TextMessage)
-def handle_message(event):
-    user_message = event.message.text.strip()
-    
-    if user_message.startswith("天氣"):
-        city = user_message.replace("天氣", "").strip()
-        if city:
-            weather_info = get_weather(city)
-            reply_message = weather_info
-        else:
-            reply_message = "請輸入要查詢天氣的城市名稱，例如：天氣高雄"
-    
-    elif user_message.startswith("預報"):
-        city = user_message.replace("預報", "").strip()
-        if city:
-            forecast_info = get_weather_forecast(city)
-            reply_message = forecast_info
-        else:
-            reply_message = "請輸入要查詢天氣預報的城市名稱，例如：預報高雄"
-    
-    else:
-        reply_message = "歡迎使用天氣小幫手！\n- 查詢即時天氣：『天氣[城市名稱]』\n- 查詢預報：『預報[城市名稱]』"
-
-    line_bot_api.reply_message(
-        event.reply_token,
-        TextSendMessage(text=reply_message)
-    )
 
 
 if __name__ == "__main__":
